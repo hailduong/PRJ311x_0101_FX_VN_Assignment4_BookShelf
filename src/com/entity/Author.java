@@ -1,9 +1,9 @@
 package com.entity;
 
 public class Author {
-    int id;
-    String name;
-    String address;
+    public int id;
+    public String name;
+    public String address;
 
     public Author(int id, String name) {
         this.id = id;
