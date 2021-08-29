@@ -73,7 +73,7 @@
           <text value="Notes"/>
         </properties>
       </component>
-      <component id="eb18c" class="javax.swing.JTextField" binding="textField2" default-binding="true">
+      <component id="eb18c" class="javax.swing.JTextField" binding="bookTitleInput">
         <constraints>
           <grid row="4" column="4" row-span="1" col-span="5" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false">
             <preferred-size width="150" height="-1"/>
@@ -82,14 +82,14 @@
         </constraints>
         <properties/>
       </component>
-      <component id="bbbe9" class="javax.swing.JComboBox" binding="comboBox1" default-binding="true">
+      <component id="bbbe9" class="javax.swing.JComboBox" binding="publisherComboBox">
         <constraints>
           <grid row="6" column="4" row-span="1" col-span="5" vsize-policy="0" hsize-policy="2" anchor="8" fill="1" indent="0" use-parent-layout="false"/>
           <forms/>
         </constraints>
         <properties/>
       </component>
-      <component id="e4d96" class="javax.swing.JList" binding="list1" default-binding="true">
+      <component id="e4d96" class="javax.swing.JList" binding="availableAuthorList">
         <constraints>
           <grid row="10" column="4" row-span="3" col-span="1" vsize-policy="6" hsize-policy="2" anchor="0" fill="3" indent="0" use-parent-layout="false">
             <preferred-size width="150" height="50"/>
@@ -98,7 +98,7 @@
         </constraints>
         <properties/>
       </component>
-      <component id="c0f4" class="javax.swing.JTextArea" binding="textArea1" default-binding="true">
+      <component id="c0f4" class="javax.swing.JTextArea" binding="noteTextArea">
         <constraints>
           <grid row="14" column="4" row-span="1" col-span="5" vsize-policy="6" hsize-policy="6" anchor="0" fill="3" indent="0" use-parent-layout="false">
             <preferred-size width="150" height="50"/>
@@ -109,7 +109,7 @@
           <rows value="5"/>
         </properties>
       </component>
-      <component id="c51da" class="javax.swing.JButton" binding="button1" default-binding="true">
+      <component id="c51da" class="javax.swing.JButton" binding="removeButton">
         <constraints>
           <grid row="10" column="6" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
           <forms/>
@@ -118,7 +118,7 @@
           <text value="&lt;"/>
         </properties>
       </component>
-      <component id="4bc0" class="javax.swing.JButton" binding="button2" default-binding="true">
+      <component id="4bc0" class="javax.swing.JButton" binding="addButton">
         <constraints>
           <grid row="12" column="6" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
           <forms/>
@@ -127,7 +127,7 @@
           <text value="&gt;"/>
         </properties>
       </component>
-      <component id="fab14" class="javax.swing.JList" binding="list2" default-binding="true">
+      <component id="fab14" class="javax.swing.JList" binding="selectedAuthorList">
         <constraints>
           <grid row="10" column="8" row-span="3" col-span="1" vsize-policy="6" hsize-policy="2" anchor="0" fill="3" indent="0" use-parent-layout="false">
             <preferred-size width="150" height="50"/>
@@ -145,7 +145,7 @@
           <text value="Update"/>
         </properties>
       </component>
-      <component id="6cee6" class="javax.swing.JTextField" binding="textField1" default-binding="true">
+      <component id="6cee6" class="javax.swing.JTextField" binding="bookIdInput">
         <constraints>
           <grid row="2" column="4" row-span="1" col-span="3" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false">
             <preferred-size width="150" height="-1"/>

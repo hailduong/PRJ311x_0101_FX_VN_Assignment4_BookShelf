@@ -10,6 +10,16 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class PublisherDAO {
+
+    static PublisherDAO instance = null;
+
+    public static PublisherDAO getInstance() {
+        if (instance == null) {
+            instance = new PublisherDAO();
+        }
+        return instance;
+    }
+
     public List<Publisher> getAllPublishers() throws Exception {
         String query = "SELECT * FROM publisher";
         Connection connection = new DBContext().getConnection();

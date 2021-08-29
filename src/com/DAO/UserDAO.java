@@ -10,6 +10,16 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class UserDAO {
+
+    static UserDAO instance = null;
+
+    public static UserDAO getInstance() {
+        if (instance == null) {
+            instance = new UserDAO();
+        }
+        return instance;
+    }
+
     public List<User> getAllUser() throws Exception {
         String query = "SELECT * FROM user";
         Connection connection = new DBContext().getConnection();
@@ -51,5 +61,10 @@ public class UserDAO {
         rs.close();
         connection.close();
         return newUser;
+    }
+
+    public boolean validateUser(User user) {
+        // TODO
+        return true;
     }
 }
