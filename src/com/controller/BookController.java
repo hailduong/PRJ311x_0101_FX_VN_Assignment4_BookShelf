@@ -33,10 +33,10 @@ public class BookController {
         tableModel.setColumnCount(0);
 
         // Get data
-        List<Book> bookList = BookDAO.getInstance().getBookBy(column, keyword);
-        for (Book book : bookList) {
-            tableModel.addRow(book.toDataRow());
-        }
+//        List<Book> bookList = BookDAO.getInstance().getBookBy(column, keyword);
+//        for (Book book : bookList) {
+//            tableModel.addRow(book.toDataRow());
+//        }
 
     }
 

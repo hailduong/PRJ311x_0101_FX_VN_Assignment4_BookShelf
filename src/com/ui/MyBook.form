@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <form xmlns="http://www.intellij.com/uidesigner/form/" version="1" bind-to-class="com.ui.MyBook">
-  <grid id="27dc6" binding="panel1" default-binding="true" layout-manager="FormLayout">
+  <grid id="27dc6" binding="myBookPanel" layout-manager="FormLayout">
     <rowspec value="center:max(d;4px):noGrow"/>
     <rowspec value="top:3dlu:noGrow"/>
     <rowspec value="center:max(d;4px):noGrow"/>
@@ -16,9 +16,11 @@
     <colspec value="left:4dlu:noGrow"/>
     <colspec value="fill:max(d;4px):noGrow"/>
     <constraints>
-      <xy x="20" y="20" width="500" height="400"/>
+      <xy x="20" y="20" width="776" height="482"/>
     </constraints>
-    <properties/>
+    <properties>
+      <preferredSize width="780" height="480"/>
+    </properties>
     <border type="none"/>
     <children>
       <component id="cff22" class="javax.swing.JTable" binding="bookTable">
@@ -28,7 +30,9 @@
           </grid>
           <forms defaultalign-horz="false" defaultalign-vert="false"/>
         </constraints>
-        <properties/>
+        <properties>
+          <minimumSize width="750" height="350"/>
+        </properties>
       </component>
       <grid id="4e104" binding="searchBookPanel" layout-manager="FormLayout">
         <rowspec value="center:max(d;4px):noGrow"/>
@@ -36,9 +40,9 @@
         <rowspec value="top:3dlu:noGrow"/>
         <rowspec value="center:max(d;4px):noGrow"/>
         <rowspec value="center:d:grow"/>
-        <colspec value="fill:d:grow"/>
+        <colspec value="fill:d:noGrow"/>
         <colspec value="left:4dlu:noGrow"/>
-        <colspec value="fill:max(d;4px):noGrow"/>
+        <colspec value="fill:max(d;4px):grow"/>
         <colspec value="left:4dlu:noGrow"/>
         <colspec value="fill:max(d;4px):noGrow"/>
         <colspec value="left:4dlu:noGrow"/>
@@ -61,7 +65,7 @@
               <text value="Search By"/>
             </properties>
           </component>
-          <component id="3558a" class="javax.swing.JComboBox" binding="searchPropertySelect">
+          <component id="3558a" class="javax.swing.JComboBox" binding="searchOptionCombo">
             <constraints>
               <grid row="0" column="2" row-span="1" col-span="1" vsize-policy="0" hsize-policy="2" anchor="8" fill="1" indent="0" use-parent-layout="false"/>
               <forms/>
@@ -103,7 +107,7 @@
         <rowspec value="center:d:grow"/>
         <rowspec value="top:3dlu:noGrow"/>
         <rowspec value="center:max(d;4px):noGrow"/>
-        <colspec value="fill:d:grow"/>
+        <colspec value="fill:d:noGrow"/>
         <colspec value="left:4dlu:noGrow"/>
         <colspec value="fill:d:grow"/>
         <colspec value="left:4dlu:noGrow"/>

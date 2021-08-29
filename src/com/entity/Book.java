@@ -33,4 +33,15 @@ public class Book {
         }
         return foundPublisher;
     }
+
+    public String[] toDataRow() throws Exception {
+        Publisher publisher = getPublisher();
+        List<Author> authorList = getAuthors();
+        StringBuilder authorName = new StringBuilder();
+        for (Author author : authorList) {
+            authorName.append(", ").append(author.name);
+        }
+        String[] dataRow = {String.valueOf(id), title, publisher.name, authorName.toString(), notes};
+        return dataRow;
+    }
 }

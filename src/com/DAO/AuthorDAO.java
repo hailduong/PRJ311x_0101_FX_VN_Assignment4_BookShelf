@@ -52,24 +52,43 @@ public class AuthorDAO {
     }
 
     public List<Author> getAuthorsByBookId(int bookId) throws Exception {
-        String query = "SELECT * FROM author WHERE bookId = ?";
+
+        // Get the list of Author Ids
+        String query = "SELECT * FROM authorBook WHERE bookId = ?";
         Connection connection = new DBContext().getConnection();
         PreparedStatement preparedStatement = connection.prepareStatement(query);
         preparedStatement.setInt(1, bookId);
         ResultSet resultSet = preparedStatement.executeQuery();
 
+        List<Integer> authorIdList = new ArrayList<>();
+        while (resultSet.next()) {
+            int authorId = resultSet.getInt("authorId");
+            authorIdList.add(authorId);
+        }
+        resultSet.close();
+        preparedStatement.close();
+
+        // Get the list of author
         List<Author> authors = new ArrayList<>();
 
-        while (resultSet.next()) {
-            int id = resultSet.getInt("id");
-            String name = resultSet.getString("name");
-            String address = resultSet.getString("address");
+        for (int authorId : authorIdList) {
+            String query1 = "SELECT * FROM author where id = ?";
+            PreparedStatement preparedStatement1 = connection.prepareStatement(query1);
+            preparedStatement1.setInt(1, authorId);
+            ResultSet resultSet1 = preparedStatement1.executeQuery();
+            while (resultSet1.next()) {
+                int id = resultSet1.getInt("id");
+                String name = resultSet1.getString("name");
+                String address = resultSet1.getString("address");
 
-            Author author = new Author(id, name, address);
-            authors.add(author);
+                Author author = new Author(id, name, address);
+                authors.add(author);
+            }
+
+            resultSet1.close();
+            preparedStatement1.close();
         }
 
-        resultSet.close();
         connection.close();
         return authors;
     }

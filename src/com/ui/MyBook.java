@@ -1,6 +1,8 @@
 package com.ui;
 
+import com.DAO.BookDAO;
 import com.controller.BookController;
+import com.entity.Book;
 import com.entity.User;
 
 import javax.swing.*;
@@ -10,15 +12,16 @@ import javax.swing.table.TableColumnModel;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.MouseEvent;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class MyBook extends JFrame {
     private JTable bookTable;
-    private JPanel panel1;
+    private JPanel myBookPanel;
     private JPanel searchBookPanel;
     private JLabel searchByLabel;
-    private JComboBox searchPropertySelect;
+    private JComboBox searchOptionCombo;
     private JTextField keywordInput;
     private JButton searchButton;
     private JLabel keywordLabel;
@@ -26,6 +29,24 @@ public class MyBook extends JFrame {
     private JLabel welcomeLabel;
 
     public User user;
+
+    public static void main(String[] args) throws Exception {
+        new MyBook();
+    }
+
+    public MyBook() throws Exception {
+        this.setupUI();
+    }
+
+    private void setupUI() throws Exception {
+        this.setContentPane(myBookPanel);
+        this.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+        this.renderComboBoxOptions();
+        this.renderBookTable();
+        this.pack();
+        setLocationRelativeTo(null);
+        this.setVisible(true);
+    }
 
     public void setUser(User user) {
         this.user = user;
@@ -46,9 +67,8 @@ public class MyBook extends JFrame {
 
     public void searchBooks() {
         try {
-            // @TODO: update the select combo box
             String[] columns = {"book.id", "book.title", "publisher.name", "author.name", "book.notes"};
-            String columnName = columns[searchPropertySelect.getSelectedIndex()];
+            String columnName = columns[searchOptionCombo.getSelectedIndex()];
             String keyword = keywordInput.getText();
 
             // Search and output the result
@@ -89,7 +109,7 @@ public class MyBook extends JFrame {
     }
 
     private void handleAddNew(ActionEvent event) {
-        AddBook addBook = new AddBook(this, true);
+        AddBook addBook = new AddBook(this);
         addBook.setVisible(true);
     }
 
@@ -98,8 +118,30 @@ public class MyBook extends JFrame {
         Point point = event.getPoint();
         int row = table.rowAtPoint(point);
         if (event.getClickCount() == 2 && row != -1) {
-            EditBook editBook = new EditBook(this, true);
+            EditBook editBook = new EditBook(this);
             editBook.setVisible(true);
         }
     }
+
+    private void renderComboBoxOptions() {
+        String[] options = {"Book ID", "Book Title", "Publisher Name", "Author Name", "Notes"};
+        DefaultComboBoxModel<String> model = new DefaultComboBoxModel<>(options);
+        searchOptionCombo.setModel(model);
+    }
+
+    private void renderBookTable() throws Exception {
+
+        List<Book> bookList = BookDAO.getInstance().getAllBooks();
+        Object[][] dataList = new String[bookList.size()][5];
+        int index = 0;
+        for (Book book : bookList) {
+            dataList[index] = book.toDataRow();
+            index++;
+        }
+
+        String[] columnNames = {"Book ID", "Book Title", "Publisher", "Authors", "Notes"};
+        tableModel = new DefaultTableModel(dataList, columnNames);
+        bookTable.setModel(tableModel);
+    }
+
 }

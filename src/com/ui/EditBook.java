@@ -95,24 +95,24 @@ public class EditBook extends JFrame {
 
     public boolean validateBook(Book book) throws Exception {
         if (book.id == -1) {
-            JOptionPane.showMessageDialog(AddBook.this, "Book ID can not be empty", "Alert", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(EditBook.this, "Book ID can not be empty", "Alert", JOptionPane.ERROR_MESSAGE);
             bookIdInput.requestFocus();
             return false;
         }
 
         if (BookDAO.getInstance().getBookById(book.id) != null) {
-            JOptionPane.showMessageDialog(AddBook.this, "Book ID must be unique", "Alert", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(EditBook.this, "Book ID must be unique", "Alert", JOptionPane.ERROR_MESSAGE);
             bookIdInput.requestFocus();
             return false;
         }
         if (book.title.isEmpty()) {
-            JOptionPane.showMessageDialog(AddBook.this, "Book Title can not be empty", "Alert", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(EditBook.this, "Book Title can not be empty", "Alert", JOptionPane.ERROR_MESSAGE);
             bookTitleInput.requestFocus();
             return false;
         }
 
         if (modelSelectedAuthor.isEmpty()) {
-            JOptionPane.showMessageDialog(AddBook.this, "Book Title can not be empty", "Alert", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(EditBook.this, "Book Title can not be empty", "Alert", JOptionPane.ERROR_MESSAGE);
             bookTitleInput.requestFocus();
             return false;
         }
@@ -194,4 +194,5 @@ public class EditBook extends JFrame {
             exception.printStackTrace();
         }
     }
+
 }
