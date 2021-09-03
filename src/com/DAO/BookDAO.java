@@ -106,15 +106,14 @@ public class BookDAO {
 
     public void addBook(Book book) throws Exception {
         // Add this book into the book table
-        String addQuery = "INSERT INTO book values(?, ?, ?, ?, ?)";
+        String addQuery = "INSERT INTO book (title, publisherId, notes, userName) values( ?, ?, ?, ?)";
         Connection connection = new DBContext().getConnection();
         PreparedStatement preparedStatement = connection.prepareStatement(addQuery);
 
-        preparedStatement.setInt(1, book.id);
-        preparedStatement.setString(2, book.title);
-        preparedStatement.setInt(3, book.publisherId);
+        preparedStatement.setString(1, book.title);
+        preparedStatement.setInt(2, book.publisherId);
         preparedStatement.setString(3, book.notes);
-        preparedStatement.setString(3, book.userName);
+        preparedStatement.setString(4, book.userName);
 
         preparedStatement.executeUpdate();
         preparedStatement.close();
@@ -132,5 +131,54 @@ public class BookDAO {
             preparedStatement1.close();
         }
         connection.close();
+    }
+
+    public List<Book> getBookBy(String columnName, String keyword) throws Exception {
+        System.out.println("[BookDAO] > columnName: " + columnName);
+        System.out.println("[BookDAO] > keyword: " + keyword);
+
+        String columnQuery = "";
+        switch (columnName) {
+            case "book.id": {
+                columnQuery = "id";
+                break;
+            }
+            case "book.title": {
+                columnQuery = "title";
+                break;
+            }
+            default: {
+                columnQuery = "title";
+            }
+        }
+
+        System.out.println("[BookDAO] > columnQuery: " + columnQuery);
+        String query = "SELECT * FROM book WHERE ? = ?";
+        Connection connection = new DBContext().getConnection();
+        PreparedStatement preparedStatement = connection.prepareStatement(query);
+        preparedStatement.setString(1, columnQuery);
+        if (columnQuery.equalsIgnoreCase("id")) {
+            preparedStatement.setInt(2, Integer.parseInt(keyword));
+        } else {
+            preparedStatement.setString(2, keyword);
+        }
+
+        ResultSet rs = preparedStatement.executeQuery();
+
+        List<Book> bookList = new ArrayList<>();
+        while (rs.next()) {
+            int id = rs.getInt("id");
+            String title = rs.getString("title");
+            int publisherId = rs.getInt("publisherId");
+            String notes = rs.getString("notes");
+            String userName = rs.getString("userName");
+
+            Book book = new Book(id, title, publisherId, notes, userName);
+            bookList.add(book);
+        }
+        preparedStatement.close();
+        connection.close();
+        System.out.println("[BookDAO] > number of book found: " + bookList.size());
+        return bookList;
     }
 }

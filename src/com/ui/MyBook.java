@@ -11,10 +11,9 @@ import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumnModel;
 import java.awt.*;
 import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 public class MyBook extends JFrame {
     private JTable bookTable;
@@ -36,13 +35,34 @@ public class MyBook extends JFrame {
 
     public MyBook() throws Exception {
         this.setupUI();
+        this.bookController = new BookController();
+        this.addSearchActionListener();
+        this.addAddNewEventListener();
+    }
+
+    private void addSearchActionListener() {
+        searchButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                handleSearch();
+            }
+        });
+    }
+
+    private void addAddNewEventListener() {
+        addNewButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                handleAddNew(e);
+            }
+        });
     }
 
     private void setupUI() throws Exception {
         this.setContentPane(myBookPanel);
         this.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
         this.renderComboBoxOptions();
-        this.renderBookTable();
+        this.showAllBooks();
         this.pack();
         setLocationRelativeTo(null);
         this.setVisible(true);
@@ -56,15 +76,6 @@ public class MyBook extends JFrame {
     DefaultTableModel tableModel;
     BookController bookController;
 
-    public void showAllBooks() throws Exception {
-        bookController = new BookController();
-        try {
-            bookController.listBooks(bookTable);
-        } catch (Exception exception) {
-            Logger.getLogger(MyBook.class.getName()).log(Level.SEVERE, null, exception);
-        }
-    }
-
     public void searchBooks() {
         try {
             String[] columns = {"book.id", "book.title", "publisher.name", "author.name", "book.notes"};
@@ -72,7 +83,8 @@ public class MyBook extends JFrame {
             String keyword = keywordInput.getText();
 
             // Search and output the result
-            bookController.search(columnName, keyword, bookTable);
+            List<Book> bookList = bookController.search(columnName, keyword);
+            this.renderBookTable(bookList);
         } catch (Exception exception) {
             exception.printStackTrace();
         }
@@ -104,7 +116,7 @@ public class MyBook extends JFrame {
         return Integer.parseInt(bookTable.getValueAt(row, column).toString());
     }
 
-    private void handleSearch(ActionEvent event) {
+    public void handleSearch() {
         searchBooks();
     }
 
@@ -129,9 +141,15 @@ public class MyBook extends JFrame {
         searchOptionCombo.setModel(model);
     }
 
-    private void renderBookTable() throws Exception {
-
+    public void showAllBooks() throws Exception {
         List<Book> bookList = BookDAO.getInstance().getAllBooks();
+        this.renderBookTable(bookList);
+    }
+
+    private void renderBookTable(List<Book> bookList) throws Exception {
+
+        if (tableModel != null) tableModel.setColumnCount(0);
+
         Object[][] dataList = new String[bookList.size()][5];
         int index = 0;
         for (Book book : bookList) {

@@ -10,6 +10,7 @@ import com.entity.User;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.Collections;
 import java.util.List;
 
@@ -20,8 +21,8 @@ public class AddBook extends JFrame {
     private JComboBox publisherComboBox;
     private JList availableAuthorList;
     private JTextArea noteTextArea;
-    private JButton removeButton;
     private JButton addButton;
+    private JButton removeButton;
     private JList selectedAuthorList;
     private JButton saveButton;
     private JButton closeButton;
@@ -31,10 +32,68 @@ public class AddBook extends JFrame {
     private final DefaultListModel<Author> modelAvailableAuthor = new DefaultListModel<>();
     private final DefaultListModel<Author> modelSelectedAuthor = new DefaultListModel<>();
 
+
     public AddBook(MyBook myBook) {
+        this.setupUI();
         this.myBook = myBook;
+
         this.listPublishers();
         this.listAuthors();
+
+        this.bindAddButtonListener();
+        this.bindRemoveButtonListener();
+        this.bindCloseButtonListener();
+        this.bindSaveButtonListener();
+    }
+
+    private void bindSaveButtonListener() {
+        saveButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                handleSave(e);
+            }
+        });
+    }
+
+    private void bindCloseButtonListener() {
+        closeButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                dispose();
+            }
+        });
+    }
+
+    private void bindRemoveButtonListener() {
+        removeButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                handleRemoveAuthorFromList();
+            }
+        });
+    }
+
+    private void bindAddButtonListener() {
+        addButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                handleAddAuthorFromList();
+            }
+        });
+    }
+
+    private void setupUI() {
+        this.setContentPane(mainPanel);
+        this.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+        this.pack();
+        this.setSize(720, 480);
+        setLocationRelativeTo(null);
+        this.setVisible(true);
+
+        // Init the combobox models
+        availableAuthorList.setModel(modelAvailableAuthor);
+        selectedAuthorList.setModel(modelSelectedAuthor);
+
     }
 
     public void listAuthors() {
@@ -43,8 +102,6 @@ public class AddBook extends JFrame {
             for (Author author : authorList) {
                 modelAvailableAuthor.addElement(author);
             }
-
-            availableAuthorList.setModel(modelAvailableAuthor);
         } catch (Exception exception) {
             exception.printStackTrace();
         }
@@ -76,17 +133,6 @@ public class AddBook extends JFrame {
     }
 
     public boolean validateBook(Book book) throws Exception {
-        if (book.id == -1) {
-            JOptionPane.showMessageDialog(AddBook.this, "Book ID can not be empty", "Alert", JOptionPane.ERROR_MESSAGE);
-            bookIdInput.requestFocus();
-            return false;
-        }
-
-        if (BookDAO.getInstance().getBookById(book.id) != null) {
-            JOptionPane.showMessageDialog(AddBook.this, "Book ID must be unique", "Alert", JOptionPane.ERROR_MESSAGE);
-            bookIdInput.requestFocus();
-            return false;
-        }
         if (book.title.isEmpty()) {
             JOptionPane.showMessageDialog(AddBook.this, "Book Title can not be empty", "Alert", JOptionPane.ERROR_MESSAGE);
             bookTitleInput.requestFocus();
@@ -94,7 +140,7 @@ public class AddBook extends JFrame {
         }
 
         if (modelSelectedAuthor.isEmpty()) {
-            JOptionPane.showMessageDialog(AddBook.this, "Book Title can not be empty", "Alert", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(AddBook.this, "Book Author can not be empty", "Alert", JOptionPane.ERROR_MESSAGE);
             bookTitleInput.requestFocus();
             return false;
         }
@@ -109,13 +155,8 @@ public class AddBook extends JFrame {
      */
     public void handleSave(ActionEvent event) {
         try {
-            String stringBookId = bookIdInput.getText().trim();
-            int bookId;
-            if (this.isNumeric(stringBookId)) {
-                bookId = Integer.parseInt(bookIdInput.getText().trim());
-            } else {
-                bookId = -1;
-            }
+            // We do not need an id, when we add a new book
+            // But we need to get the other properties
             String bookTitle = bookTitleInput.getText().trim();
             Publisher publisher = (Publisher) publisherComboBox.getSelectedItem();
             String notes = noteTextArea.getText().trim();
@@ -124,7 +165,14 @@ public class AddBook extends JFrame {
 
             User user = myBook.user;
             assert publisher != null;
-            Book book = new Book(bookId, bookTitle, publisher.id, notes, user.userName);
+
+            String userName = null;
+            if (user == null) {
+                userName = "admin";
+            } else {
+                userName = user.userName;
+            }
+            Book book = new Book(bookTitle, publisher.id, notes, userName);
 
             if (validateBook(book)) {
                 myBook.bookController.addBook(book);
@@ -142,8 +190,6 @@ public class AddBook extends JFrame {
      * When users select an author from the left list
      */
     public void handleAddAuthorFromList() {
-        // TODO: Add handling code
-
         //  Move selected Author from the left list to the right list
         int selectedRow = availableAuthorList.getSelectedIndex();
         if (selectedRow != -1) {

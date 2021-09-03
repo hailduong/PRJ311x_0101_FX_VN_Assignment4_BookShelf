@@ -26,17 +26,13 @@ public class BookController {
     }
 
 
-    public void search(String column, String keyword, JTable jBookTable) throws Exception {
-        DefaultTableModel tableModel = (DefaultTableModel) jBookTable.getModel();
-
-        // Clear data
-        tableModel.setColumnCount(0);
+    public List<Book> search(String columnName, String keyword) throws Exception {
+        System.out.println("columnName: " + columnName);
+        System.out.println("keyword: " + keyword);
 
         // Get data
-//        List<Book> bookList = BookDAO.getInstance().getBookBy(column, keyword);
-//        for (Book book : bookList) {
-//            tableModel.addRow(book.toDataRow());
-//        }
+        List<Book> bookList = BookDAO.getInstance().getBookBy(columnName, keyword);
+        return bookList;
 
     }
 

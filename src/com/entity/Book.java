@@ -20,6 +20,14 @@ public class Book {
         this.userName = userName;
     }
 
+    public Book(String title, int publisherId, String notes, String userName) {
+        this.title = title;
+        this.publisherId = publisherId;
+        this.notes = notes;
+        this.userName = userName;
+    }
+
+
     public List<Author> getAuthors() throws Exception {
         List<Author> authors = AuthorDAO.getInstance().getAuthorsByBookId(this.id);
         return authors;

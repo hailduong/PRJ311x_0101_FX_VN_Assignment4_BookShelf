@@ -10,4 +10,9 @@ public class Publisher {
         this.name = name;
         this.address = address;
     }
+
+    @Override
+    public String toString() {
+        return name;
+    }
 }
