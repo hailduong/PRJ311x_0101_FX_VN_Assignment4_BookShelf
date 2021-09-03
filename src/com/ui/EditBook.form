@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <form xmlns="http://www.intellij.com/uidesigner/form/" version="1" bind-to-class="com.ui.EditBook">
-  <grid id="27dc6" binding="panel1" default-binding="true" layout-manager="FormLayout">
+  <grid id="27dc6" binding="mainPanel" layout-manager="FormLayout">
     <rowspec value="center:max(d;4px):noGrow"/>
     <rowspec value="top:3dlu:noGrow"/>
     <rowspec value="center:d:noGrow"/>
@@ -11,9 +11,9 @@
     <rowspec value="top:3dlu:noGrow"/>
     <rowspec value="center:max(d;4px):noGrow"/>
     <rowspec value="top:3dlu:noGrow"/>
-    <rowspec value="center:d:noGrow"/>
+    <rowspec value="center:d:grow"/>
     <rowspec value="top:3dlu:noGrow"/>
-    <rowspec value="center:max(d;4px):noGrow"/>
+    <rowspec value="center:max(d;4px):grow"/>
     <rowspec value="top:3dlu:noGrow"/>
     <rowspec value="top:max(d;4px):grow"/>
     <rowspec value="top:3dlu:noGrow"/>
@@ -106,25 +106,8 @@
           <forms defaultalign-horz="false" defaultalign-vert="false"/>
         </constraints>
         <properties>
+          <lineWrap value="true"/>
           <rows value="5"/>
-        </properties>
-      </component>
-      <component id="c51da" class="javax.swing.JButton" binding="removeButton">
-        <constraints>
-          <grid row="10" column="6" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
-          <forms/>
-        </constraints>
-        <properties>
-          <text value="&lt;"/>
-        </properties>
-      </component>
-      <component id="4bc0" class="javax.swing.JButton" binding="addButton">
-        <constraints>
-          <grid row="12" column="6" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
-          <forms/>
-        </constraints>
-        <properties>
-          <text value="&gt;"/>
         </properties>
       </component>
       <component id="fab14" class="javax.swing.JList" binding="selectedAuthorList">
@@ -152,7 +135,9 @@
           </grid>
           <forms defaultalign-horz="false"/>
         </constraints>
-        <properties/>
+        <properties>
+          <editable value="false"/>
+        </properties>
       </component>
       <component id="92257" class="javax.swing.JLabel">
         <constraints>
@@ -188,6 +173,24 @@
         </constraints>
         <properties>
           <text value="Delete"/>
+        </properties>
+      </component>
+      <component id="4bc0" class="javax.swing.JButton" binding="addButton">
+        <constraints>
+          <grid row="10" column="6" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+          <forms/>
+        </constraints>
+        <properties>
+          <text value="&gt;"/>
+        </properties>
+      </component>
+      <component id="c51da" class="javax.swing.JButton" binding="removeButton">
+        <constraints>
+          <grid row="12" column="6" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+          <forms/>
+        </constraints>
+        <properties>
+          <text value="&lt;"/>
         </properties>
       </component>
     </children>

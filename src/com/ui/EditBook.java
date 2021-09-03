@@ -10,18 +10,19 @@ import com.entity.User;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.Collections;
 import java.util.List;
 
 public class EditBook extends JFrame {
-    private JPanel panel1;
+    private JPanel mainPanel;
     private JTextField bookIdInput;
     private JTextField bookTitleInput;
     private JComboBox publisherComboBox;
     private JList availableAuthorList;
     private JTextArea noteTextArea;
-    private JButton removeButton;
     private JButton addButton;
+    private JButton removeButton;
     private JList selectedAuthorList;
     private JButton updateButton;
     private JButton closeButton;
@@ -32,10 +33,82 @@ public class EditBook extends JFrame {
     private final DefaultListModel<Author> modelAvailableAuthor = new DefaultListModel<>();
     private final DefaultListModel<Author> modelSelectedAuthor = new DefaultListModel<>();
 
-    public EditBook(MyBook myBook) {
+    private int oldBookId;
+
+    public EditBook(MyBook myBook, int bookId) {
+
         this.myBook = myBook;
+        oldBookId = bookId;
+
+        this.setupUI();
         this.listPublishers();
         this.listAuthors();
+        this.showBook(bookId);
+
+        this.bindAddButtonListener();
+        this.bindRemoveButtonListener();
+        this.bindCloseButtonListener();
+        this.bindDeleteButtonListener();
+        this.bindUpdateButtonListener();
+    }
+
+    private void bindUpdateButtonListener() {
+        updateButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                handleSave(e);
+            }
+        });
+    }
+
+    private void bindDeleteButtonListener() {
+        deleteButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                handleDelete(e);
+            }
+        });
+    }
+
+    private void bindCloseButtonListener() {
+        closeButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                dispose();
+            }
+        });
+    }
+
+    private void bindRemoveButtonListener() {
+        removeButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                handleRemoveAuthorFromList();
+            }
+        });
+    }
+
+    private void bindAddButtonListener() {
+        addButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                handleAddAuthorFromList();
+            }
+        });
+    }
+
+    private void setupUI() {
+        this.setContentPane(mainPanel);
+        this.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+        this.pack();
+        this.setSize(720, 480);
+        setLocationRelativeTo(null);
+        this.setVisible(true);
+
+        // Init the combobox models
+        availableAuthorList.setModel(modelAvailableAuthor);
+        selectedAuthorList.setModel(modelSelectedAuthor);
+
     }
 
     public void listAuthors() {
@@ -45,7 +118,6 @@ public class EditBook extends JFrame {
                 modelAvailableAuthor.addElement(author);
             }
 
-            availableAuthorList.setModel(modelAvailableAuthor);
         } catch (Exception exception) {
             exception.printStackTrace();
         }
@@ -94,17 +166,17 @@ public class EditBook extends JFrame {
     }
 
     public boolean validateBook(Book book) throws Exception {
-        if (book.id == -1) {
-            JOptionPane.showMessageDialog(EditBook.this, "Book ID can not be empty", "Alert", JOptionPane.ERROR_MESSAGE);
-            bookIdInput.requestFocus();
-            return false;
-        }
-
-        if (BookDAO.getInstance().getBookById(book.id) != null) {
-            JOptionPane.showMessageDialog(EditBook.this, "Book ID must be unique", "Alert", JOptionPane.ERROR_MESSAGE);
-            bookIdInput.requestFocus();
-            return false;
-        }
+//        if (book.id == -1) {
+//            JOptionPane.showMessageDialog(EditBook.this, "Book ID can not be empty", "Alert", JOptionPane.ERROR_MESSAGE);
+//            bookIdInput.requestFocus();
+//            return false;
+//        }
+//
+//        if (BookDAO.getInstance().getBookById(book.id) != null) {
+//            JOptionPane.showMessageDialog(EditBook.this, "Book ID must be unique", "Alert", JOptionPane.ERROR_MESSAGE);
+//            bookIdInput.requestFocus();
+//            return false;
+//        }
         if (book.title.isEmpty()) {
             JOptionPane.showMessageDialog(EditBook.this, "Book Title can not be empty", "Alert", JOptionPane.ERROR_MESSAGE);
             bookTitleInput.requestFocus();
@@ -112,7 +184,7 @@ public class EditBook extends JFrame {
         }
 
         if (modelSelectedAuthor.isEmpty()) {
-            JOptionPane.showMessageDialog(EditBook.this, "Book Title can not be empty", "Alert", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(EditBook.this, "Book Author can not be empty", "Alert", JOptionPane.ERROR_MESSAGE);
             bookTitleInput.requestFocus();
             return false;
         }
@@ -122,25 +194,29 @@ public class EditBook extends JFrame {
 
     public void handleSave(ActionEvent event) {
         try {
-            String stringBookId = bookIdInput.getText().trim();
-            int bookId;
-            if (this.isNumeric(stringBookId)) {
-                bookId = Integer.parseInt(bookIdInput.getText().trim());
-            } else {
-                bookId = -1;
-            }
+            int newBookId = Integer.parseInt(bookIdInput.getText().trim());
             String bookTitle = bookTitleInput.getText().trim();
             Publisher publisher = (Publisher) publisherComboBox.getSelectedItem();
             String notes = noteTextArea.getText().trim();
 
             List<Author> authorList = Collections.list(modelSelectedAuthor.elements());
 
+            // Process user name
             User user = myBook.user;
-            assert publisher != null;
-            Book book = new Book(bookId, bookTitle, publisher.id, notes, user.userName);
+            String userName = null;
+            if (user == null) {
+                userName = "admin";
+            } else {
+                userName = user.userName;
+            }
 
+            // Create a new book
+            assert publisher != null;
+            Book book = new Book(newBookId, bookTitle, publisher.id, notes, userName);
+
+            // Validate book before persisting
             if (validateBook(book)) {
-                myBook.bookController.addBook(book, authorList);
+                myBook.bookController.editBook(book, authorList, oldBookId);
                 JOptionPane.showMessageDialog(EditBook.this, "The book was updated successfully");
 
                 // Reload the list
@@ -155,8 +231,6 @@ public class EditBook extends JFrame {
      * When users select an author from the left list
      */
     public void handleAddAuthorFromList() {
-        // TODO: Add handling code
-
         //  Move selected Author from the left list to the right list
         int selectedRow = availableAuthorList.getSelectedIndex();
         if (selectedRow != -1) {
@@ -169,7 +243,6 @@ public class EditBook extends JFrame {
      * When user remove an author from the right list
      */
     public void handleRemoveAuthorFromList() {
-        // TODO: add handling code
         // Move author from the right to the left list
         int selectedRow = selectedAuthorList.getSelectedIndex();
         if (selectedRow != -1) {
@@ -187,8 +260,15 @@ public class EditBook extends JFrame {
                     JOptionPane.YES_NO_OPTION) == JOptionPane.YES_NO_OPTION) {
                 myBook.bookController.deleteBook(Integer.parseInt(bookIdInput.getText()));
                 JOptionPane.showMessageDialog(EditBook.this,
-                        "A book " + bookIdInput.getText() + " has been deleted");
+                        "The book '" + bookTitleInput.getText() + "' was deleted successfully");
+
+                // Reload the list
+                myBook.showAllBooks();
+
+                // Close the dialog
                 dispose();
+
+
             }
         } catch (Exception exception) {
             exception.printStackTrace();

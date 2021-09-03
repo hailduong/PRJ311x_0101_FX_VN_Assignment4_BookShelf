@@ -41,8 +41,8 @@ public class BookController {
         return BookDAO.getInstance().getBookById(bookId);
     }
 
-    public void editBook(Book book) throws Exception {
-        BookDAO.getInstance().editBook(book);
+    public void editBook(Book book, List<Author> authorList, int oldBookId) throws Exception {
+        BookDAO.getInstance().editBook(book, authorList, oldBookId);
     }
 
     public void deleteBook(int bookId) throws Exception {

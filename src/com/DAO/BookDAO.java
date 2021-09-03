@@ -63,7 +63,7 @@ public class BookDAO {
         preparedStatement.close();
 
         // Delete from book
-        String query2 = "DELETE FROM book WHERE bookId = ?";
+        String query2 = "DELETE FROM book WHERE id = ?";
         Connection connection2 = new DBContext().getConnection();
         PreparedStatement preparedStatement2 = connection.prepareStatement(query2);
         preparedStatement2.setInt(1, bookId);
@@ -72,32 +72,32 @@ public class BookDAO {
         connection.close();
     }
 
-    public void editBook(Book book) throws Exception {
-        // Update the `book` table
-        String updateQuery = "UPDATE book SET title = ?, publisherId = ?, notes = ? WHERE id = ?";
+    public void editBook(Book newBook, List<Author> authors, int oldBookId) throws Exception {
         Connection connection = new DBContext().getConnection();
-        PreparedStatement preparedStatement = connection.prepareStatement(updateQuery);
-        preparedStatement.setString(1, book.title);
-        preparedStatement.setInt(1, book.publisherId);
-        preparedStatement.setString(1, book.notes);
-        preparedStatement.setInt(1, book.id);
-        preparedStatement.executeUpdate();
-        preparedStatement.close();
 
         // Update the `authorBook` table, remove the old author from the book
         String deleteQuery = "DELETE FROM authorBook WHERE bookId = ?";
         PreparedStatement preparedStatement2 = connection.prepareStatement(deleteQuery);
-        preparedStatement2.setInt(1, book.id);
+        preparedStatement2.setInt(1, oldBookId);
+
+        // Update the `book` table
+        String updateQuery = "UPDATE book SET title = ?, publisherId = ?, notes = ?, id = ? WHERE id = ?";
+        PreparedStatement preparedStatement = connection.prepareStatement(updateQuery);
+        preparedStatement.setString(1, newBook.title);
+        preparedStatement.setInt(2, newBook.publisherId);
+        preparedStatement.setString(3, newBook.notes);
+        preparedStatement.setInt(4, newBook.id);
+        preparedStatement.setInt(5, oldBookId);
+        preparedStatement.executeUpdate();
+        preparedStatement.close();
 
         // Update the new author to the book
-        List<Author> authors = book.getAuthors();
         for (int i = 0; i < authors.size(); i++) {
             Author author = authors.get(i);
-            String insertQuery = "INSERT INTO authorBook values(?, ?, ?)";
+            String insertQuery = "INSERT INTO authorBook (authorId, bookId) values(?, ?)";
             PreparedStatement preparedStatement3 = connection.prepareStatement(insertQuery);
             preparedStatement3.setInt(1, author.id);
-            preparedStatement3.setInt(2, book.id);
-            preparedStatement3.setInt(3, book.id);
+            preparedStatement3.setInt(2, newBook.id);
             preparedStatement3.executeUpdate();
             preparedStatement3.close();
         }

@@ -12,6 +12,7 @@ import javax.swing.table.TableColumnModel;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.List;
 
@@ -36,8 +37,20 @@ public class MyBook extends JFrame {
     public MyBook() throws Exception {
         this.setupUI();
         this.bookController = new BookController();
+
         this.addSearchActionListener();
         this.addAddNewEventListener();
+        this.addTableCellListener();
+    }
+
+    private void addTableCellListener() {
+        bookTable.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                super.mouseClicked(e);
+                handleTableRowDoubleClick(e);
+            }
+        });
     }
 
     private void addSearchActionListener() {
@@ -130,7 +143,8 @@ public class MyBook extends JFrame {
         Point point = event.getPoint();
         int row = table.rowAtPoint(point);
         if (event.getClickCount() == 2 && row != -1) {
-            EditBook editBook = new EditBook(this);
+            int bookId = Integer.parseInt((String) tableModel.getValueAt(row, 0));
+            EditBook editBook = new EditBook(this, bookId);
             editBook.setVisible(true);
         }
     }
@@ -158,7 +172,13 @@ public class MyBook extends JFrame {
         }
 
         String[] columnNames = {"Book ID", "Book Title", "Publisher", "Authors", "Notes"};
-        tableModel = new DefaultTableModel(dataList, columnNames);
+        tableModel = new DefaultTableModel(dataList, columnNames) {
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                //all cells false
+                return false;
+            }
+        };
         bookTable.setModel(tableModel);
     }
 
