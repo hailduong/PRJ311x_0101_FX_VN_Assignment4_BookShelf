@@ -140,7 +140,7 @@ public class EditBook extends JFrame {
             Book book = new Book(bookId, bookTitle, publisher.id, notes, user.userName);
 
             if (validateBook(book)) {
-                myBook.bookController.addBook(book);
+                myBook.bookController.addBook(book, authorList);
                 JOptionPane.showMessageDialog(EditBook.this, "The book was updated successfully");
 
                 // Reload the list

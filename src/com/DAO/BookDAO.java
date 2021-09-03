@@ -104,7 +104,7 @@ public class BookDAO {
         connection.close();
     }
 
-    public void addBook(Book book) throws Exception {
+    public void addBook(Book book, List<Author> authorList) throws Exception {
         // Add this book into the book table
         String addQuery = "INSERT INTO book (title, publisherId, notes, userName) values( ?, ?, ?, ?)";
         Connection connection = new DBContext().getConnection();
@@ -119,14 +119,11 @@ public class BookDAO {
         preparedStatement.close();
 
         // Add this book into the authorBook table
-        List<Author> authorList = book.getAuthors();
         for (int i = 0; i < authorList.size(); i++) {
             Author author = authorList.get(i);
-            String insertQuery = "INSERT INTO authorBook values(?, ?, ?)";
-            PreparedStatement preparedStatement1 = connection.prepareStatement(addQuery);
+            String insertQuery = "INSERT INTO authorBook (authorId, bookId) values(?, LAST_INSERT_ID())";
+            PreparedStatement preparedStatement1 = connection.prepareStatement(insertQuery);
             preparedStatement1.setInt(1, author.id);
-            preparedStatement1.setInt(2, book.id);
-            preparedStatement1.setInt(3, i);
             preparedStatement1.executeUpdate();
             preparedStatement1.close();
         }

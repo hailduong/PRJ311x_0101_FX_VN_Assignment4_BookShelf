@@ -3,6 +3,7 @@ package com.entity;
 import com.DAO.AuthorDAO;
 import com.DAO.PublisherDAO;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class Book {
@@ -45,11 +46,12 @@ public class Book {
     public String[] toDataRow() throws Exception {
         Publisher publisher = getPublisher();
         List<Author> authorList = getAuthors();
-        StringBuilder authorName = new StringBuilder();
+        List<String> authorNameList = new ArrayList<>();
         for (Author author : authorList) {
-            authorName.append(", ").append(author.name);
+            authorNameList.add(author.name);
         }
-        String[] dataRow = {String.valueOf(id), title, publisher.name, authorName.toString(), notes};
+        String authorName = String.join(", ", authorNameList);
+        String[] dataRow = {String.valueOf(id), title, publisher.name, authorName, notes};
         return dataRow;
     }
 }

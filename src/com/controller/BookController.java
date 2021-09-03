@@ -1,6 +1,7 @@
 package com.controller;
 
 import com.DAO.BookDAO;
+import com.entity.Author;
 import com.entity.Book;
 
 import javax.swing.*;
@@ -8,8 +9,8 @@ import javax.swing.table.DefaultTableModel;
 import java.util.List;
 
 public class BookController {
-    public void addBook(Book book) throws Exception {
-        BookDAO.getInstance().addBook(book);
+    public void addBook(Book book, List<Author> authorList) throws Exception {
+        BookDAO.getInstance().addBook(book, authorList);
     }
 
     public void listBooks(JTable jBookTable) throws Exception {

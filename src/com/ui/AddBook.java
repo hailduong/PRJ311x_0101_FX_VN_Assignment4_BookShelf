@@ -160,22 +160,25 @@ public class AddBook extends JFrame {
             String bookTitle = bookTitleInput.getText().trim();
             Publisher publisher = (Publisher) publisherComboBox.getSelectedItem();
             String notes = noteTextArea.getText().trim();
-
             List<Author> authorList = Collections.list(modelSelectedAuthor.elements());
 
+            // Process user name
             User user = myBook.user;
-            assert publisher != null;
-
             String userName = null;
             if (user == null) {
                 userName = "admin";
             } else {
                 userName = user.userName;
             }
+
+            // Create a new book
+            assert publisher != null;
             Book book = new Book(bookTitle, publisher.id, notes, userName);
 
+            // Validate book before persisting
             if (validateBook(book)) {
-                myBook.bookController.addBook(book);
+
+                myBook.bookController.addBook(book, authorList);
                 JOptionPane.showMessageDialog(AddBook.this, "The book was added");
 
                 // Reload the list
