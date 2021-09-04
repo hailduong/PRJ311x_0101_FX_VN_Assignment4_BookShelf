@@ -10,10 +10,7 @@ import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumnModel;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
+import java.awt.event.*;
 import java.util.List;
 
 public class MyBook extends JFrame {
@@ -25,8 +22,10 @@ public class MyBook extends JFrame {
     private JTextField keywordInput;
     private JButton searchButton;
     private JLabel keywordLabel;
-    private JButton addNewButton;
+    private JButton addBookButton;
     private JLabel welcomeLabel;
+    private JButton addAuthorButton;
+    private JButton addPublisherButton;
 
     public User user;
 
@@ -37,13 +36,27 @@ public class MyBook extends JFrame {
     public MyBook() throws Exception {
         this.setupUI();
         this.bookController = new BookController();
-
-        this.addSearchActionListener();
-        this.addAddNewEventListener();
-        this.addTableCellListener();
     }
 
-    private void addTableCellListener() {
+    private void bindAddAuthorButtonListener() {
+        addAuthorButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                new AddAuthorPublisher("author");
+            }
+        });
+    }
+
+    private void bindAddPublisherButtonListener() {
+        addPublisherButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                new AddAuthorPublisher("publisher");
+            }
+        });
+    }
+
+    private void bindTableCellListener() {
         bookTable.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
@@ -53,7 +66,7 @@ public class MyBook extends JFrame {
         });
     }
 
-    private void addSearchActionListener() {
+    private void bindSearchActionListener() {
         searchButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -62,8 +75,8 @@ public class MyBook extends JFrame {
         });
     }
 
-    private void addAddNewEventListener() {
-        addNewButton.addActionListener(new ActionListener() {
+    private void bindAddNewEventListener() {
+        addBookButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 handleAddNew(e);
@@ -79,6 +92,25 @@ public class MyBook extends JFrame {
         this.pack();
         setLocationRelativeTo(null);
         this.setVisible(true);
+
+        this.bindSearchActionListener();
+        this.bindAddNewEventListener();
+        this.bindTableCellListener();
+        this.bindAddPublisherButtonListener();
+        this.bindAddAuthorButtonListener();
+        this.clearKeywordInputPlacholderOnFocus();
+    }
+
+    public void clearKeywordInputPlacholderOnFocus() {
+        keywordInput.addFocusListener(new FocusAdapter() {
+            @Override
+            public void focusGained(FocusEvent e) {
+                super.focusGained(e);
+                if (keywordInput.getText().trim().equalsIgnoreCase("Input anything...")) {
+                    keywordInput.setText("");
+                }
+            }
+        });
     }
 
     public void setUser(User user) {

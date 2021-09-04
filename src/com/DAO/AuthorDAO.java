@@ -116,4 +116,14 @@ public class AuthorDAO {
         connection.close();
         return authors;
     }
+
+    public void addAuthor(String name, String address) throws Exception {
+        Connection connection = new DBContext().getConnection();
+
+        String query = "INSERT INTO author (name, address) values (?, ?)";
+        PreparedStatement preparedStatement = connection.prepareStatement(query);
+        preparedStatement.setString(1, name);
+        preparedStatement.setString(2, address);
+        preparedStatement.executeUpdate();
+    }
 }

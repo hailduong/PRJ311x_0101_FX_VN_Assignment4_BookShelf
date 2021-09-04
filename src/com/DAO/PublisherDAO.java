@@ -60,4 +60,14 @@ public class PublisherDAO {
         }
         return -1;
     }
+
+    public void addPublisher(String name, String address) throws Exception {
+        Connection connection = new DBContext().getConnection();
+
+        String query = "INSERT INTO publisher (name, address) values (?, ?)";
+        PreparedStatement preparedStatement = connection.prepareStatement(query);
+        preparedStatement.setString(1, name);
+        preparedStatement.setString(2, address);
+        preparedStatement.executeUpdate();
+    }
 }
