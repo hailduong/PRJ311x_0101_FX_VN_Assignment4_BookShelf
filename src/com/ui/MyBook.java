@@ -93,6 +93,7 @@ public class MyBook extends JFrame {
         setLocationRelativeTo(null);
         this.setVisible(true);
 
+
         this.bindSearchActionListener();
         this.bindAddNewEventListener();
         this.bindTableCellListener();
@@ -194,8 +195,10 @@ public class MyBook extends JFrame {
 
     private void renderBookTable(List<Book> bookList) throws Exception {
 
+        // Clear data
         if (tableModel != null) tableModel.setColumnCount(0);
 
+        // Process new data
         Object[][] dataList = new String[bookList.size()][5];
         int index = 0;
         for (Book book : bookList) {
@@ -204,14 +207,19 @@ public class MyBook extends JFrame {
         }
 
         String[] columnNames = {"Book ID", "Book Title", "Publisher", "Authors", "Notes"};
+        //  Make cell un-editable
         tableModel = new DefaultTableModel(dataList, columnNames) {
             @Override
             public boolean isCellEditable(int row, int column) {
-                //all cells false
                 return false;
             }
         };
+
+        // Set the model
         bookTable.setModel(tableModel);
+
+        // Resize the column widths
+        resizeColumnWidth(bookTable);
     }
 
 }
