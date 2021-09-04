@@ -75,11 +75,6 @@ public class BookDAO {
     public void editBook(Book newBook, List<Author> authors, int oldBookId) throws Exception {
         Connection connection = new DBContext().getConnection();
 
-        // Update the `authorBook` table, remove the old author from the book
-        String deleteQuery = "DELETE FROM authorBook WHERE bookId = ?";
-        PreparedStatement preparedStatement2 = connection.prepareStatement(deleteQuery);
-        preparedStatement2.setInt(1, oldBookId);
-
         // Update the `book` table
         String updateQuery = "UPDATE book SET title = ?, publisherId = ?, notes = ?, id = ? WHERE id = ?";
         PreparedStatement preparedStatement = connection.prepareStatement(updateQuery);
@@ -90,6 +85,12 @@ public class BookDAO {
         preparedStatement.setInt(5, oldBookId);
         preparedStatement.executeUpdate();
         preparedStatement.close();
+
+        // Update the `authorBook` table, remove the old author from the book
+        String deleteQuery = "DELETE FROM authorBook WHERE bookId = ?";
+        PreparedStatement preparedStatement2 = connection.prepareStatement(deleteQuery);
+        preparedStatement2.setInt(1, oldBookId);
+        preparedStatement2.executeUpdate();
 
         // Update the new author to the book
         for (int i = 0; i < authors.size(); i++) {
