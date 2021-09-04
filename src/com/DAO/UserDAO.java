@@ -63,8 +63,17 @@ public class UserDAO {
         return newUser;
     }
 
-    public boolean validateUser(User user) {
-        // TODO
+    public boolean validateUser(User user) throws Exception {
+        User foundUser = getUserByName(user.userName);
+
+        if (foundUser == null) {
+            return false;
+        }
+
+        if (!foundUser.password.equals(user.password)) {
+            return false;
+        }
+
         return true;
     }
 }

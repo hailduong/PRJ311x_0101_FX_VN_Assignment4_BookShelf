@@ -2,16 +2,10 @@ package com.ui;
 
 import com.DAO.UserDAO;
 import com.entity.User;
-import com.jgoodies.forms.layout.CellConstraints;
-import com.jgoodies.forms.layout.FormLayout;
 
 import javax.swing.*;
-import javax.swing.plaf.FontUIResource;
-import javax.swing.text.StyleContext;
-import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.Locale;
 
 public class Login extends JFrame {
     private JTextField userNameInput;
@@ -28,8 +22,6 @@ public class Login extends JFrame {
 
     public Login() {
         this.setupUI();
-        this.addActionListenerToCloseButton();
-        this.addActionListenerToSignInButton();
     }
 
     private void setupUI() {
@@ -38,6 +30,9 @@ public class Login extends JFrame {
         this.pack();
         setLocationRelativeTo(null);
         this.setVisible(true);
+
+        this.addActionListenerToCloseButton();
+        this.addActionListenerToSignInButton();
     }
 
     private void addActionListenerToSignInButton() {
