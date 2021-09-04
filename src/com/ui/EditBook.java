@@ -1,7 +1,6 @@
 package com.ui;
 
 import com.DAO.AuthorDAO;
-import com.DAO.BookDAO;
 import com.DAO.PublisherDAO;
 import com.entity.Author;
 import com.entity.Book;
@@ -11,6 +10,7 @@ import com.entity.User;
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -41,8 +41,6 @@ public class EditBook extends JFrame {
         oldBookId = bookId;
 
         this.setupUI();
-        this.listPublishers();
-        this.listAuthors();
         this.showBook(bookId);
 
         this.bindAddButtonListener();
@@ -105,13 +103,16 @@ public class EditBook extends JFrame {
         setLocationRelativeTo(null);
         this.setVisible(true);
 
-        // Init the combobox models
-        availableAuthorList.setModel(modelAvailableAuthor);
-        selectedAuthorList.setModel(modelSelectedAuthor);
+        this.listPublishers();
+        this.listAuthors();
 
     }
 
     public void listAuthors() {
+
+        availableAuthorList.setModel(modelAvailableAuthor);
+        selectedAuthorList.setModel(modelSelectedAuthor);
+
         try {
             List<Author> authorList = AuthorDAO.getInstance().getAllAuthors();
             for (Author author : authorList) {
@@ -142,12 +143,27 @@ public class EditBook extends JFrame {
             bookIdInput.setText(String.valueOf(book.id));
             bookTitleInput.setText(book.title);
             noteTextArea.setText(book.notes);
-            publisherComboBox.setSelectedItem(book.getPublisher());
-            List<Author> authorList = book.getAuthors();
-            for (Author author : authorList) {
+            modelPublishers.setSelectedItem(book.getPublisher());
+
+            List<Author> currentBookAuthorList = book.getAuthors();
+            // Add to the selected list
+            for (Author author : currentBookAuthorList) {
                 modelSelectedAuthor.addElement(author);
-                modelAvailableAuthor.removeElement(author);
             }
+
+            List<Author> allAuthorList = AuthorDAO.getInstance().getAllAuthors();
+            List<Author> remainingList = new ArrayList<>();
+            remainingList.addAll(allAuthorList);
+            for (Author author : allAuthorList) {
+                for (Author currentAuthor : currentBookAuthorList) {
+                    if (author.id == currentAuthor.id){
+                        remainingList.remove(author);
+                    }
+                }
+            }
+
+            modelAvailableAuthor.removeAllElements();
+            modelAvailableAuthor.addAll(remainingList);
         } catch (Exception exception) {
             exception.printStackTrace();
         }
