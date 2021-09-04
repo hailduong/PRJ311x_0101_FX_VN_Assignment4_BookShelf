@@ -51,6 +51,30 @@ public class AuthorDAO {
         return null;
     }
 
+    public List<Author> getAuthorsByName(String name) throws Exception {
+        List<Author> authors = getAllAuthors();
+        List<Author> authorByNameList = new ArrayList<>();
+        for (Author author : authors) {
+            if (author.name.toLowerCase().contains(name.toLowerCase())) {
+                authorByNameList.add(author);
+            }
+        }
+
+        return authorByNameList;
+    }
+
+    public List<Integer> getAuthorIdByName(String name) throws Exception {
+        List<Author> authors = getAllAuthors();
+        List<Integer> authorByNameList = new ArrayList<>();
+        for (Author author : authors) {
+            if (author.name.toLowerCase().contains(name.toLowerCase())) {
+                authorByNameList.add(author.id);
+            }
+        }
+
+        return authorByNameList;
+    }
+
     public List<Author> getAuthorsByBookId(int bookId) throws Exception {
 
         // Get the list of Author Ids

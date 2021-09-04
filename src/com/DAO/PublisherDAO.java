@@ -50,4 +50,14 @@ public class PublisherDAO {
         }
         return null;
     }
+
+    public int getPublisherIdFromName(String name) throws Exception {
+        List<Publisher> publishers = getAllPublishers();
+        for (Publisher publisher : publishers) {
+            if (publisher.name.toLowerCase().contains(name.toLowerCase())) {
+                return publisher.id;
+            }
+        }
+        return -1;
+    }
 }
